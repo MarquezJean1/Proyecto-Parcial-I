@@ -8,21 +8,31 @@ import bs4 as bs
 from bs4 import BeautifulSoup
 import urllib.request
 import os
- 
-idUser=input("ID: ")
-url ='https://es.stackoverflow.com/users/' + idUser+'/?tab=tags'
-sauce=urllib.request.urlopen(url).read()
-soup = BeautifulSoup(sauce, 'html.parser')
-print('Url del usuario: '+url)
+def leerId():                                     #lee numero enteros
+  while True:
+      try:
+          entrada = int(input("Ingrese el ID: "))
+          return str(entrada)                     #Convierto de int a string
+      except ValueError:                          #encaso si sale un exception
+          print("El id es solo numero entero")
 
-txt=soup.get_text()
-file = open("texto.txt", "w")
-file.write(txt)
-file.close()
+idUser=leerId()
+url ='https://es.stackoverflow.com/users/' + idUser+'/?tab=tags' #crea el url con el id
+try:                                              # Cuando no se encuentre el usuario      
+  sauce=urllib.request.urlopen(url).read()        #decarga información de la página
+  soup = BeautifulSoup(sauce, 'html.parser')      #transforma la información  a html
+  print('Url del usuario: '+url)                  #presenta la url para ir a la pagina
 
-with open('texto.txt', encoding='utf-8') as f:
-    document = ''.join(f.readlines())
-#print (document)
-wordcloud = WordCloud().generate(document)
-plt.imshow(wordcloud, interpolation='bilinear')
-plt.axis("off")
+  txt=soup.get_text()                             #guarda el texto
+  file = open("texto.txt", "w")                   # crea un archivo
+  file.write(txt)                                 # escribe el archivo
+  file.close()                                    #cierra el flujo
+
+  with open('texto.txt', encoding='utf-8') as f:  #recupera el archivo y lo cambio a utf-8
+      document = ''.join(f.readlines())           # lee el archivo y guarda en document 
+  #print (document)                               # para ver el archivo
+  wordcloud = WordCloud().generate(document)      #instancia wordcloud
+  plt.imshow(wordcloud, interpolation='bilinear') #para dar caracteristicas
+  plt.axis("off")
+except:                                           #en caso aparezca un error
+  print("Lo sentimos no se encontro el usuario.")
