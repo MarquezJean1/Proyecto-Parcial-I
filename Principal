@@ -1,0 +1,28 @@
+from os import path
+from PIL import Image
+import numpy as np
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud, STOPWORDS
+
+import bs4 as bs
+from bs4 import BeautifulSoup
+import urllib.request
+import os
+ 
+idUser=input("ID: ")
+url ='https://es.stackoverflow.com/users/' + idUser+'/?tab=tags'
+sauce=urllib.request.urlopen(url).read()
+soup = BeautifulSoup(sauce, 'html.parser')
+print('Url del usuario: '+url)
+
+txt=soup.get_text()
+file = open("texto.txt", "w")
+file.write(txt)
+file.close()
+
+with open('texto.txt', encoding='utf-8') as f:
+    document = ''.join(f.readlines())
+#print (document)
+wordcloud = WordCloud().generate(document)
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis("off")
